@@ -1,0 +1,67 @@
+========================================================================================================================================================================================================================================================
+| ROW 1 – CORE OPS (Linux | Network | SQL Joins | SQL DDL/DML)                                                                                                                                                                   |
+|------------------------|----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Linux Admin**        | **Network & Port Troubleshooting** | **SQL – Joins & Reads** | **SQL – DDL/DML & Performance** |
+| `w`                    | `ss -tuln`                     | `SELECT * FROM users ORDER BY id LIMIT 1 OFFSET 14;` | `DROP TABLE old_logs;` |
+| → Shows who is logged in, uptime & load average. | → Fast view of all listening TCP/UDP ports. | → “15th User” – OFFSET 14 skips the first 14 rows. | → DDL – permanently removes the table definition. |
+| `uname -a`             | `netstat -tulpn`               | `SELECT * FROM t1 UNION SELECT * FROM t2;` | `DELETE FROM users WHERE id = 15;` |
+| → Kernel, architecture & OS version. | → Ports + owning PID. | → Combines rows **removing duplicates**. | → DML – deletes a single row (user 15). |
+| `hostnamectl`          | `lsof -i :8080`                | `SELECT * FROM t1 UNION ALL SELECT * FROM t2;` | `ALTER TABLE users ADD COLUMN phone TEXT;` |
+| → View / change hostname, OS release, virtualization. | → Who is holding port 8080? (e.g., Java app). | → Combines rows **keeping duplicates**. | → DDL – adds a new column. |
+| `systemctl status <svc> && systemctl restart <svc>` | `telnet <IP> <Port>` | **INNER JOIN**: `SELECT u.*, o.* FROM users u JOIN orders o ON u.id = o.user_id;` | `TRUNCATE TABLE temp_data;` |
+| → Check service health; restart if hung. | → Test remote TCP connectivity. | → Returns rows that exist in **both** tables. | → DDL – empties a table fast, keeps structure. |
+| `journalctl -u <svc> -xe` | `nc -zv <IP> <Port>` | **LEFT JOIN**: `SELECT u.*, o.* FROM users u LEFT JOIN orders o ON u.id = o.user_id;` | `EXPLAIN ANALYZE SELECT …;` |
+| → Deep dive into service logs. | → Netcat stealth port scan (faster than telnet). | → Finds **orphans** (users without orders). | → Shows the execution plan & cost. |
+| `chmod 755 <file>`     | `curl -I -v <URL>`             | **RIGHT JOIN**: `SELECT u.*, o.* FROM users u RIGHT JOIN orders o ON u.id = o.user_id;` | `SELECT pid, state, query FROM pg_stat_activity;` |
+| → rwxr‑x‑r‑x (owner exec, group/others read+exec). | → Show HTTP headers & verbose output. | → Keeps all rows from the **right** table (rarely needed). | → Spot long‑running / blocked queries. |
+| `chown -R user:group <dir>` | `traceroute <IP>`            | **FULL OUTER JOIN**: `SELECT * FROM t1 FULL OUTER JOIN t2 ON t1.id = t2.id;` | `VACUUM (VERBOSE, ANALYZE);` |
+| → Recursively fix permission errors. | → Show each hop to the destination. | → Returns **all** rows from both tables (matched + unmatched). | → Reclaims storage & updates statistics. |
+| `find /path -mtime +7 -delete` | `nslookup <domain> && dig <domain> ANY` | **EXISTS / SUB‑QUERY**: `SELECT * FROM users u WHERE EXISTS (SELECT 1 FROM orders o WHERE o.user_id = u.id);` | **UPSERT**: `INSERT INTO users(id, name) VALUES (15,'Bob') ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;` |
+| → Delete files older than 7 days (log‑rotation). | → DNS lookup & detailed records. | → Fast “at least one related row” filter. | → Insert‑or‑update in one statement. |
+| `grep -R "ERROR" /var/log` | `ip route show`                | **LOCKS CHECK**: `SELECT pid, mode FROM pg_locks l JOIN pg_stat_activity a ON l.pid = a.pid;` | **Performance tip**: `ANALYZE;` |
+| → Recursively search for “ERROR” in logs. | → Show routing table (gateway, interfaces). | → Identify blocking transactions. | → Refresh planner statistics. |
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| ROW 2 – DEV / CLOUD (Java | Spring | K8s | AWS | Monitoring)                                                                                                                                                     |
+|------------------------|----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Java, OOP & Spring** | **Kubernetes (K8s) Components** | **AWS Cloud Infra** | **CloudWatch, Logging & Monitoring** |
+| `class vs object`      | `kubectl get pods -n <ns>` | **EC2** – `aws ec2 describe-instances --filters "Name=tag:Env,Values=prod"` | **Metrics** – CPUUtilization, DiskReadOps, ELB 5xxCount |
+| → Blueprint vs runtime instance. | → Lists pod status, restarts, age. | **S3** – `aws s3 ls s3://my‑bucket/ --recursive` | **Logs** – `/aws/lambda/*`, `/aws/ecs/container‑logs/*` |
+| `int vs Integer`       | `kubectl describe pod <pod>` | **IAM Role** – Trust policy & permission set (least‑privilege). | **Alarms** – e.g., `CPUUtilization > 80 % for 5 min → SNS`. |
+| → Primitive (no null) vs wrapper (object). | → Detailed pod spec, events, container states. | **VPC** – Private subnets + NAT/IGW, route tables. | **Dashboards** – RED (Rate, Errors, Duration) graphs. |
+| `inheritance / polymorphism` | `kubectl logs -f <pod>` | **Security Group (SG)** – Stateful firewall (allow‑in = allow‑out). | **Insights** – `aws cloudwatch get-metric-statistics` for latency. |
+| → Reuse parent code, method overload/override. | → Live streaming of container logs. | **Network ACL (NACL)** – Stateless, explicit inbound/outbound rules. | **Tracing** – X‑Ray / OpenTelemetry (Request‑ID propagation). |
+| `IOC / DI` (Spring)    | `kubectl top nodes` / `kubectl top pods` | **ALB / Target Group** – Health‑check path `/actuator/health`. | **Splunk / Elastic** – Search `ERROR` or `Exception`. |
+| → Spring injects dependencies, manages lifecycle. | → CPU / Memory per node or pod (detect hot spots). | **Route 53** – Weighted routing for canary releases. | **Alerting** – CloudWatch Alarms → PagerDuty / Teams. |
+| `@RestController / @Service` | `kubectl exec -it <pod> -- /bin/bash` | **VPC Endpoint** – Private S3 access without internet gateway. | **Metrics‑as‑Logs** – `aws logs put-metric-filter`. |
+| → Exposes JSON APIs; business logic layer. | → Open a shell inside a pod (debug). | **IAM Role for Service Accounts (IRSA)** – Pods assume least‑privilege roles. | **Log‑Retention** – Set retention days per log group. |
+| `Maven (pom.xml)`      | `kubectl apply -f <manifest.yaml>` | **Auto‑Scaling** – ASG policies, target tracking (CPU > 70 %). | **Dashboard Example** – “Tomcat Health” (CPU, Heap, 5xx). |
+| → Dependency & build management. | → Create / update Deployments, Services, ConfigMaps. | **RDS (PostgreSQL)** – Multi‑AZ, automated backups, `pg_stat_activity`. | **Custom Metric** – `TomcatHeapUsed` (via CloudWatch Agent). |
+| `Hibernate / JPA`      | `kubectl rollout status deployment/<name>` | **S3 Lifecycle** – Transition to Glacier after 30 days. | **Log‑Group Example** – `/aws/ecs/container‑logs/app-prod`. |
+| → ORM – maps Java objects to DB tables. | → Wait for rollout to finish (zero unavailable). | **IAM Policy Example** – `s3:GetObject` on `arn:aws:s3:::my‑bucket/*`. | **Metric Filter** – Count `Exception` occurrences. |
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| ROW 3 – REQUEST FLOW & AUTOMATION (Spring MVC | Bash | SRE Troubleshooting | Incident Mgmt)                                                                                                                            |
+|------------------------|----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Spring MVC Request Flow** | **Bash Automation: Log Rotation** | **L2 / SRE Troubleshooting Steps** | **Incident Management & Terms** |
+| 1️⃣ `DispatcherServlet` receives the HTTP request. | `#!/bin/bash`<br>`LOG_DIR="/opt/tomcat/logs"`<br>`ARCHIVE_DIR="/opt/tomcat/archive"`<br>`DATE=$(date +%Y%m%d)` | 1️⃣ **Check Monitoring** – CloudWatch / Splunk alerts. | **SLA** – Service Level Agreement (e.g., 99.9 % uptime). |
+| 2️⃣ `HandlerMapping` finds the matching `@Controller`. | `tar -czf $ARCHIVE_DIR/logs_$DATE.tar.gz $LOG_DIR/*.log`<br>`find $LOG_DIR -type f -name "*.log" -exec truncate -s 0 {} +` | 2️⃣ **Trace API** – Re‑run the failing call with `curl -v`. | **MTTR** – Mean Time To Recovery (key SRE KPI). |
+| 3️⃣ `@Controller` invokes the `@Service`. | `# Schedule via crontab`<br>`0 0 * * * /path/to/rotate_logs.sh` | 3️⃣ **Check Service Health** – `systemctl status tomcat`. | **RCA** – Root‑Cause Analysis (why it happened & prevention). |
+| 4️⃣ `@Service` calls the `@Repository`. | `# Exit code handling`<br>`if [ $? -eq 0 ]; then echo "Success"; else echo "Fail"; fi` | 4️⃣ **Check Resources** – `top`, `df -h`, `iostat`. | **SME** – Subject Matter Expert (owner of the app/code). |
+| 5️⃣ `@Repository` runs Hibernate/JPA SQL, returns entities. | | 5️⃣ **DB & Java Deep‑Dive** – `pg_stat_activity`, `jstack -l <pid>`. | **Bridge Call** – Live Zoom/Teams call for P1 incidents. |
+| 6️⃣ `Controller` serialises the model to JSON (200 OK). | | 6️⃣ **RCA Documentation** – Write “What, Why, Fix” in JIRA. | **Handover** – Transfer active tickets across shifts/regions. |
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| ROW 4 – API CODES, TOMCAT OPS & INTERVIEW Q&A (Tech | Process)                                                                                                                                                     |
+|------------------------|----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **REST API Status Codes & Actions** | **Tomcat & Deployment Ops** | **Interview Q&A – Technical** | **Interview Q&A – Process** |
+| `200 OK / 201 Created` | `bin/startup.sh` / `bin/shutdown.sh` | **K8s troubleshooting layers**:<br>1️⃣ `kubectl logs <pod>`<br>2️⃣ `kubectl describe pod <pod>`<br>3️⃣ `kubectl top nodes`<br>4️⃣ Check ALB TG health | **Automation example** – “Bash script that tars old logs, truncates live files, and schedules via crontab.” |
+| → No action needed – request succeeded. | → Manual start/stop of Tomcat (useful for hot‑fixes). | **Why use each layer?**<br>*Logs* → stack trace.<br>*Describe* → events, image‑pull errors.<br>*Top* → CPU/memory pressure.<br>*ALB* → health‑check failures. | **P1 Incident handling**:<br>1️⃣ Acknowledge & check SLA.<br>2️⃣ Bridge call.<br>3️⃣ Mitigate (restart, scale).<br>4️⃣ Communicate every 30 min.<br>5️⃣ Post‑mortem after service restoration. |
+| `400 Bad Request` | `catalina.out` | **SQL for “User 15 can’t see orders”**:<br>`SELECT u.id, u.name, o.id AS order_id FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.id = 15;` | **Automation story** – “Wrote a Bash script that rotates logs nightly, preventing disk‑full alerts.” |
+| → Client‑side error – check JSON payload. | → Main Tomcat log – look for stack traces. | → LEFT JOIN shows `NULL` order_id → missing orders. | |
+| `401 Unauthorized / 403 Forbidden` | `work/ & temp/` (delete stale cache) | **500 vs 504**:<br>*500* – app crashed / code bug.<br>*504* – gateway timed‑out waiting for downstream (DB/API). | **Why move to SRE?** – “I already own L1 monitoring; I want to own root‑cause analysis, automation & reliability.” |
+| → Token expired or IAM permission issue. | → Delete `work/` & `temp/` to clear “ghost” cache files. | | |
+| `404 Not Found` | `setenv.sh` (JVM heap config) | | |
+| → Wrong URL or WAR not deployed. | → Set `-Xmx` / `-Xms` for heap sizing. | | |
+| `500 Internal Error` | `server.xml` (connector/port config) | | |
+| → Java exception – check stack trace. | → Configure ports (8080) & SSL connectors. | | |
+| `503 Service Unavailable / 504 Gateway Timeout` | `systemctl restart tomcat` | | |
+| → Downstream DB slow, LB timeout, or app not listening. | → Standard way to restart the app. | | |
+========================================================================================================================================================================================================================================================
