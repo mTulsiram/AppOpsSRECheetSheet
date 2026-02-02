@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SRE & App Ops Ultimate Master Grid</title>
+<style>
+    /* Basic, High-Readability Styling */
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.5;
+        color: #333;
+        margin: 20px;
+    }
+    h1 {
+        text-align: center;
+        text-transform: uppercase;
+        border-bottom: 3px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+        page-break-inside: avoid; /* Prevents rows from being cut in half when printing */
+    }
+    th, td {
+        border: 2px solid #444; /* Thick borders for clear separation */
+        padding: 12px;
+        vertical-align: top;
+        text-align: left;
+    }
+    th {
+        background-color: #eee;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+    td {
+        width: 25%; /* Forces 4 even columns */
+        background-color: #fff;
+        font-size: 12px;
+    }
+    /* Code block styling for maximum contrast */
+    code {
+        font-family: "Consolas", "Monaco", "Courier New", monospace;
+        display: block;
+        background-color: #f4f4f4;
+        border: 1px solid #ccc;
+        padding: 4px 6px;
+        margin-bottom: 6px;
+        font-weight: bold;
+        color: #d63031;
+        white-space: pre-wrap; /* Allows long commands to wrap */
+    }
+    /* Explanation text styling */
+    .explain {
+        display: block;
+        margin-bottom: 15px; /* Adds space between items */
+    }
+    .note {
+        font-style: italic;
+        color: #666;
+    }
+</style>
+</head>
+<body>
+
+    <h1>🚀 SRE & App Ops Ultimate Master Grid</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>1. Linux Admin & Permissions</th>
+                <th>2. Network & Port Troubleshooting</th>
+                <th>3. SQL Deep-Dive: Reads & Joins</th>
+                <th>4. SQL Deep-Dive: DDL, DML & Perf</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <code>w</code>
+                    <span class="explain">Shows <b>who</b> is logged in and what they are doing. Also displays the system <b>load average</b> for the last 1, 5, and 15 minutes.</span>
+
+                    <code>uptime</code>
+                    <span class="explain">Quick check to see how long the server has been running. If it's only been up for 5 mins, it likely crashed and rebooted recently.</span>
+
+                    <code>uname -a</code>
+                    <span class="explain">Prints all system info: Kernel version, hardware architecture (x86_64 vs arm), and OS release date. Essential for compatibility checks.</span>
+
+                    <code>hostnamectl</code>
+                    <span class="explain">View or set the system hostname. Useful for verifying you are on the correct server (e.g., `prod-db-01` vs `dev-db-01`).</span>
+
+                    <code>systemctl status &lt;svc&gt;</code>
+                    <span class="explain">Checks if a service (like Tomcat, Nginx, or Postgres) is <b>active (running)</b>, <b>inactive (dead)</b>, or <b>failed</b>.</span>
+
+                    <code>systemctl restart &lt;svc&gt;</code>
+                    <span class="explain">The standard "hard fix" command. Stops and immediately starts the service. Use this when an app is hung or unresponsive.</span>
+
+                    <code>journalctl -u &lt;svc&gt; -xe</code>
+                    <span class="explain">Fetches the system logs specifically for one service. `-x` adds explanations, `-e` jumps to the end (most recent error).</span>
+
+                    <code>chmod 755 &lt;file&gt;</code>
+                    <span class="explain">Sets permissions: Owner gets Read/Write/Execute (7). Group and Others get Read/Execute (5). Standard for scripts.</span>
+
+                    <code>chown -R user:group &lt;dir&gt;</code>
+                    <span class="explain">Recursively changes ownership of a folder. Fixes "Permission Denied" errors when an app cannot write to its log directory.</span>
+
+                    <code>grep -r "ERROR" /var/log</code>
+                    <span class="explain">Recursively searches for the string "ERROR" inside every file in the /var/log directory. The fastest way to find a problem.</span>
+                </td>
+                <td>
+                    <code>ss -tuln</code>
+                    <span class="explain">The modern replacement for netstat. Shows <b>T</b>CP, <b>U</b>DP, <b>L</b>istening sockets numerically. Fast and lightweight.</span>
+
+                    <code>netstat -tulpn</code>
+                    <span class="explain">Classic command. Shows Listening ports + the <b>PID</b> (Process ID) and <b>Program Name</b> that owns the port.</span>
+
+                    <code>lsof -i :8080</code>
+                    <span class="explain">"List Open Files". Specifically asks: "Who is locking port 8080?". Essential for finding zombie processes holding ports.</span>
+
+                    <code>telnet &lt;IP&gt; &lt;Port&gt;</code>
+                    <span class="explain">Legacy tool to test if a remote port is open. If the screen goes blank/black, the connection was <b>successful</b>.</span>
+
+                    <code>nc -zv &lt;IP&gt; &lt;Port&gt;</code>
+                    <span class="explain"><b>Netcat</b>. The modern way to test connectivity. `-z` scans without sending data, `-v` is verbose. Returns "Succeeded!" immediately.</span>
+
+                    <code>curl -Iv &lt;URL&gt;</code>
+                    <span class="explain">Tests an HTTP endpoint. `-I` fetches headers only (fast). `-v` shows the SSL handshake and HTTP Status Code (200/404/500).</span>
+
+                    <code>traceroute &lt;IP&gt;</code>
+                    <span class="explain">Maps every "hop" (router) between you and the destination. Used to find where a network connection is timing out.</span>
+
+                    <code>nslookup &lt;domain&gt;</code>
+                    <span class="explain">Queries the DNS server to find the IP address behind a domain name. Useful to check if DNS resolution is failing.</span>
+
+                    <code>dig &lt;domain&gt; ANY</code>
+                    <span class="explain">"Domain Information Groper". Returns robust DNS details (A Records, CNAMEs, MX records) for deep debugging.</span>
+
+                    <code>ping -c 4 &lt;IP&gt;</code>
+                    <span class="explain">Sends 4 ICMP packets to test basic reachability and check for <b>packet loss</b> percentage.</span>
+                </td>
+                <td>
+                    <code>SELECT * FROM users ORDER BY id LIMIT 1 OFFSET 14;</code>
+                    <span class="explain"><b>The "15th User" Query.</b> `OFFSET 14` skips the first 14 rows. `LIMIT 1` takes the very next row (the 15th). Crucial for pagination.</span>
+
+                    <code>SELECT * FROM t1 UNION SELECT * FROM t2;</code>
+                    <span class="explain">Combines the result sets of two queries. <b>UNION</b> performs a sort and <b>removes duplicates</b> (Slower).</span>
+
+                    <code>SELECT * FROM t1 UNION ALL SELECT * FROM t2;</code>
+                    <span class="explain">Combines result sets but <b>keeps duplicates</b>. It is much faster because it just appends the data without sorting.</span>
+
+                    <code>INNER JOIN</code>
+                    <span class="explain"><code>SELECT * FROM users u JOIN orders o ON u.id=o.uid;</code><br>Returns rows ONLY when there is a match in <b>BOTH</b> tables. Users with no orders are hidden.</span>
+
+                    <code>LEFT JOIN (Troubleshooting)</code>
+                    <span class="explain"><code>SELECT * FROM users u LEFT JOIN orders o ON u.id=o.uid;</code><br>Returns ALL rows from the Left table (Users), even if there are no matches in the Right (Orders).</span>
+
+                    <code>RIGHT JOIN</code>
+                    <span class="explain">Returns ALL rows from the Right table, and matched rows from the Left. Rarely used in daily Ops.</span>
+
+                    <code>FULL OUTER JOIN</code>
+                    <span class="explain"><code>SELECT * FROM t1 FULL OUTER JOIN t2 ON t1.id=t2.id</code><br>Returns <b>EVERYTHING</b>. Rows that match, plus rows from Left with no match, plus rows from Right with no match.</span>
+
+                    <code>EXISTS</code>
+                    <span class="explain"><code>SELECT * FROM u WHERE EXISTS (SELECT 1...);</code><br>Optimized filter. Checks if "at least one" related row exists. Faster than IN for large lists.</span>
+
+                    <code>Window Function</code>
+                    <span class="explain"><code>ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary)</code><br>Assigns a rank (1, 2, 3...) to rows within a specific group (Partition).</span>
+                </td>
+                <td>
+                    <code>DROP TABLE old_logs;</code>
+                    <span class="explain"><b>DDL (Data Definition Language)</b>. Permanently deletes the table and its structure. Cannot be undone easily.</span>
+
+                    <code>DELETE FROM users WHERE id=15;</code>
+                    <span class="explain"><b>DML (Data Manipulation Language)</b>. Removes a specific row of data. The table structure remains intact.</span>
+
+                    <code>ALTER TABLE users ADD COLUMN phone TEXT;</code>
+                    <span class="explain"><b>DDL</b>. Modifies the structure of an existing table to add a new field/column.</span>
+
+                    <code>TRUNCATE TABLE temp_data;</code>
+                    <span class="explain"><b>DDL</b>. Instantly empties all data from a table but keeps the structure. Much faster than DELETE for clearing tables.</span>
+
+                    <code>EXPLAIN ANALYZE SELECT ... ;</code>
+                    <span class="explain">Runs the query and shows the actual execution time and cost. Essential for debugging <b>slow queries</b>.</span>
+
+                    <code>SELECT pid, state, query FROM pg_stat_activity;</code>
+                    <span class="explain"><b>Postgres Specific</b>. Shows all currently running queries. Use this to find queries that are "stuck" or running for too long.</span>
+
+                    <code>VACUUM (VERBOSE, ANALYZE);</code>
+                    <span class="explain"><b>Postgres Specific</b>. Reclaims storage space from dead rows and updates the query planner statistics for better performance.</span>
+
+                    <code>UPSERT</code>
+                    <span class="explain"><code>INSERT INTO ... ON CONFLICT (id) DO UPDATE ...</code><br>Tries to Insert a row. If the Primary Key already exists, it Updates the existing row instead.</span>
+
+                    <code>Transaction Hygiene</code>
+                    <span class="explain"><code>BEGIN; UPDATE...; COMMIT;</code><br>Ensures <b>Atomicity</b>. Either all commands in the block succeed (Commit), or none of them do (Rollback).</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>1. Java, OOPS & Spring Framework</th>
+                <th>2. Kubernetes (K8s) Components</th>
+                <th>3. AWS Cloud Infrastructure</th>
+                <th>4. CloudWatch, Logging & Monitoring</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <code>Class vs Object</code>
+                    <span class="explain"><b>Class:</b> The Blueprint/Template. <b>Object:</b> The specific instance built from that blueprint.</span>
+
+                    <code>int vs Integer</code>
+                    <span class="explain"><b>int:</b> Primitive type, stores raw values, cannot be null. <b>Integer:</b> Wrapper Class, is an Object, can be null.</span>
+
+                    <code>Inheritance</code>
+                    <span class="explain">Mechanism where a new Child class reuses (inherits) fields and logic from a Parent class.</span>
+
+                    <code>Polymorphism</code>
+                    <span class="explain">"One name, many forms". <b>Overloading:</b> Same method name, different parameters. <b>Overriding:</b> Child class replaces Parent method.</span>
+
+                    <code>IOC (Inversion of Control)</code>
+                    <span class="explain">The Spring Framework manages the lifecycle of objects (creation, destruction) so the developer doesn't have to (`new Object()`).</span>
+
+                    <code>DI (Dependency Injection)</code>
+                    <span class="explain">Spring injects the required dependencies into a class automatically using annotations like `@Autowired`.</span>
+
+                    <code>@RestController</code>
+                    <span class="explain">Spring Annotation. Marks a class as a controller where every method returns a domain object instead of a view (JSON API).</span>
+
+                    <code>@Service</code>
+                    <span class="explain">Marks a class as holding Business Logic. This is where calculations and data processing happen.</span>
+
+                    <code>@Repository</code>
+                    <span class="explain">Marks a class as a Data Access Object (DAO). It interacts directly with the Database (Hibernate/JPA).</span>
+
+                    <code>Maven (pom.xml)</code>
+                    <span class="explain">Project Management tool. `pom.xml` defines dependencies (libraries/jars) and how to build/package the app.</span>
+                </td>
+                <td>
+                    <code>kubectl get pods -n &lt;ns&gt;</code>
+                    <span class="explain">Lists all Pods in a Namespace. Shows Status (Running/Error), Age, and Restart Counts.</span>
+
+                    <code>kubectl describe pod &lt;name&gt;</code>
+                    <span class="explain"><b>The #1 Debug Tool.</b> Shows configuration and the "Events" stream. Use this to find why a pod is Pending or Crashing.</span>
+
+                    <code>kubectl logs -f &lt;pod&gt;</code>
+                    <span class="explain">Streams the `stdout` (standard output) from the container. This is where you see Application Stack Traces.</span>
+
+                    <code>kubectl top nodes</code>
+                    <span class="explain">Shows current CPU and Memory usage for all nodes in the cluster. identifying resource exhaustion.</span>
+
+                    <code>Deployment</code>
+                    <span class="explain">Manages stateless apps. Ensures the desired number of replicas are always running.</span>
+
+                    <code>StatefulSet</code>
+                    <span class="explain">Manages stateful apps (like Databases). Pods get persistent IDs (db-0, db-1) and sticky storage.</span>
+
+                    <code>Service / Ingress</code>
+                    <span class="explain"><b>Service:</b> Internal Load Balancer (ClusterIP). <b>Ingress:</b> External Route (HTTP/HTTPS) handling traffic into the cluster.</span>
+
+                    <code>ConfigMap / Secret</code>
+                    <span class="explain">Injects configuration (URLs, properties) and Sensitive Data (Passwords, Keys) into Pods as Env Variables.</span>
+
+                    <code>PV / PVC</code>
+                    <span class="explain"><b>Persistent Volume:</b> Actual storage. <b>Claim:</b> A request for storage by a Pod. Ensures data survives Pod restarts.</span>
+
+                    <code>Control Plane</code>
+                    <span class="explain">The "Brain" of K8s. Includes API Server (Frontend), ETCD (Database), Scheduler (Placement), and Controller Manager.</span>
+                </td>
+                <td>
+                    <code>EC2 / S3 / IAM / VPC</code>
+                    <span class="explain">The Core 4. Compute (Servers), Storage (Objects), Identity (Permissions), and Networking (Isolation).</span>
+
+                    <code>IAM Role</code>
+                    <span class="explain">An identity that can be assumed by a machine (EC2/Lambda). It provides temporary credentials, removing the need for hardcoded keys.</span>
+
+                    <code>Security Group (SG)</code>
+                    <span class="explain"><b>Stateful</b> Firewall at the Instance level. If you allow Traffic IN, the response is automatically allowed OUT.</span>
+
+                    <code>NACL (Network ACL)</code>
+                    <span class="explain"><b>Stateless</b> Firewall at the Subnet level. You must explicitly allow traffic both IN and OUT.</span>
+
+                    <code>ALB / Target Group</code>
+                    <span class="explain"><b>ALB:</b> Layer 7 Load Balancer (HTTP). <b>Target Group:</b> Performs Health Checks on instances to know where to send traffic.</span>
+
+                    <code>VPC Endpoint</code>
+                    <span class="explain">Allows private instances to connect to AWS Services (like S3) without needing an Internet Gateway or NAT.</span>
+
+                    <code>CloudWatch</code>
+                    <span class="explain">AWS's native monitoring service. Collects Logs, Metrics (CPU/Disk), and triggers Alarms.</span>
+
+                    <code>Route 53</code>
+                    <span class="explain">AWS Managed DNS. Translates domain names to IP addresses. Supports Health Checks and Failover routing.</span>
+
+                    <code>Lambda</code>
+                    <span class="explain">Serverless Compute. You upload code, AWS runs it. You pay only for compute time used (ms).</span>
+
+                    <code>Auto Scaling Group</code>
+                    <span class="explain">Automatically adjusts the number of EC2 instances up or down based on load metrics (e.g., Average CPU).</span>
+                </td>
+                <td>
+                    <code>CloudWatch Metrics</code>
+                    <span class="explain">Key metrics to watch: CPUUtilization, DiskReadOps, ELB Latency, 5xxErrorCount, StatusCheckFailed.</span>
+
+                    <code>Splunk / Nieman</code>
+                    <span class="explain">Log Aggregation tools. Use SPL queries (`index=prod "Error"`) to find patterns across thousands of servers.</span>
+
+                    <code>Postman / Curl</code>
+                    <span class="explain">Tools to interact with APIs directly. Use them to reproduce errors (400/500) and inspect Response Headers.</span>
+
+                    <code>Distributed Tracing</code>
+                    <span class="explain">Using a unique `Trace-ID` or `Request-ID` to follow a single user request as it hops through multiple microservices.</span>
+
+                    <code>"Monarch" / Azure One</code>
+                    <span class="explain">Project-specific monitoring tools mentioned in the Job Description. Be ready to discuss how you use them for dashboarding.</span>
+
+                    <code>Alerts & Alarms</code>
+                    <span class="explain">Automated notifications triggered when thresholds are breached (e.g., "CPU > 90% for 5 mins" -> PagerDuty).</span>
+
+                    <code>Dashboards</code>
+                    <span class="explain">Visual panels showing the health of a system. Focus on <b>RED Metrics</b>: Rate (Traffic), Errors, Duration (Latency).</span>
+
+                    <code>Log Rotation</code>
+                    <span class="explain">Critical maintenance task. Rotating logs prevents the server disk from filling up and crashing the app (Disk Pressure).</span>
+
+                    <code>IAM Diagnosis</code>
+                    <span class="explain">1. Check <b>Trust Policy</b> (Can EC2 assume?).<br>2. Check <b>Permissions Policy</b> (Is s3:ListBucket allowed?).<br>3. Check <b>SCPs</b> (Org level Deny).</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>1. Spring MVC Request Flow</th>
+                <th>2. Bash Automation: Log Rotation Script</th>
+                <th>3. Troubleshooting Steps (L2/SRE Flow)</th>
+                <th>4. Incident Management & Terms</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <code>1. DispatcherServlet</code>
+                    <span class="explain">The "Front Controller". It receives <b>ALL</b> incoming HTTP requests and delegates them to the right handler.</span>
+
+                    <code>2. Handler Mapping</code>
+                    <span class="explain">Scans the code to find which <b>@Controller</b> method matches the URL (e.g., `/api/users`).</span>
+
+                    <code>3. Service Layer</code>
+                    <span class="explain">Controller calls the <b>@Service</b>. This contains the Business Logic (calculations, validations).</span>
+
+                    <code>4. Repository Layer</code>
+                    <span class="explain">Service calls the <b>@Repository</b>. This layer uses Hibernate/JPA to query the Database.</span>
+
+                    <code>5. Database</code>
+                    <span class="explain">The SQL query executes. The DB returns raw data, which Hibernate converts into Java Objects (Model).</span>
+
+                    <code>6. Response</code>
+                    <span class="explain">The Controller takes the data, serializes it to <b>JSON</b>, and sends a 200 OK response to the client.</span>
+
+                    <code>Exception Handling</code>
+                    <span class="explain">If any step fails, <b>@ControllerAdvice</b> catches the crash and returns a friendly error (400/500 JSON).</span>
+                </td>
+                <td>
+                    <code>#!/bin/bash</code>
+                    <span class="explain">Standard Shebang line. `set -Eeuo pipefail` ensures the script exits immediately if any command fails.</span>
+
+                    <code>LOG_DIR="/opt/tomcat/logs"</code>
+                    <span class="explain">Variable definition for source and destination directories.</span>
+
+                    <code>DATE=$(date +%Y%m%d)</code>
+                    <span class="explain">Creates a timestamp variable to append to filenames (e.g., `20250203`).</span>
+
+                    <code>tar -czf ...</code>
+                    <span class="explain">Compresses old logs into a `.tar.gz` archive to save disk space.</span>
+
+                    <code>truncate -s 0 "$LOG/app.log"</code>
+                    <span class="explain"><b>Critical Trick:</b> Clears the content of the active log file without deleting the file itself. Keeps the app running.</span>
+
+                    <code>find "$ARCH" -mtime +7 -delete</code>
+                    <span class="explain">Finds and deletes any archive files older than 7 days to maintain free disk space.</span>
+
+                    <code>crontab -e</code>
+                    <span class="explain">Opens the scheduler. `0 0 * * * script.sh` runs the script every night at midnight.</span>
+
+                    <code>Health Check Logic</code>
+                    <span class="explain"><code>if ! curl -s localhost:8080/health; then restart; fi</code><br>Simple logic to restart a service if the endpoint fails.</span>
+                </td>
+                <td>
+                    <code>1. Check Monitoring</code>
+                    <span class="explain">Look at Splunk/CloudWatch. Is the issue a spike in errors, high latency, or total blackout?</span>
+
+                    <code>2. Trace API</code>
+                    <span class="explain">Use Postman or Curl to reproduce the 500/404 error locally. Check the response body for clues.</span>
+
+                    <code>3. Check Service Health</code>
+                    <span class="explain">Run `systemctl status tomcat`. Is it Active, Inactive, or Failed?</span>
+
+                    <code>4. Check Resources</code>
+                    <span class="explain">Run `top` (CPU/RAM) and `df -h` (Disk). A 100% full disk is a common cause of crashes.</span>
+
+                    <code>5. DB & Java Deep-Dive</code>
+                    <span class="explain">Check Database connectivity. Run `jstack` to see if Java threads are locked or waiting.</span>
+
+                    <code>6. K8S Check</code>
+                    <span class="explain">Run `kubectl describe pod` to check for Events (BackOff, OOMKilled). Check `kubectl logs`.</span>
+
+                    <code>7. Network</code>
+                    <span class="explain">Check Security Groups (is port 8080 allowed?), Load Balancer Target Health, and DNS resolution.</span>
+
+                    <code>8. RCA</code>
+                    <span class="explain">Once fixed, perform Root Cause Analysis. Document the "Why" and the "Fix" in a Jira ticket.</span>
+                </td>
+                <td>
+                    <code>SLA (Service Level Agreement)</code>
+                    <span class="explain">The contract with the customer (e.g., "We guarantee 99.9% Uptime"). The deadline you must meet.</span>
+
+                    <code>MTTR (Mean Time To Recovery)</code>
+                    <span class="explain">The average time it takes to fix a broken system. Lower is better. The #1 metric for SREs.</span>
+
+                    <code>RCA (Root Cause Analysis)</code>
+                    <span class="explain">The post-incident report. Details exactly <b>what</b> broke, <b>why</b> it broke, and how to <b>prevent</b> it.</span>
+
+                    <code>SME (Subject Matter Expert)</code>
+                    <span class="explain">The person who knows the specific application logic best. Usually a developer or senior ops.</span>
+
+                    <code>Bridge Call</code>
+                    <span class="explain">A live conference call (Zoom/Teams) opened during P1 incidents to coordinate multiple teams (DB, Net, App).</span>
+
+                    <code>Handover</code>
+                    <span class="explain">The process of transferring knowledge, active tickets, and incident status from one shift (India) to the next (US).</span>
+
+                    <code>SOP (Standard Operating Procedure)</code>
+                    <span class="explain">A step-by-step document describing exactly how to perform a routine task or fix a known issue.</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>1. REST API Status Codes & Actions</th>
+                <th>2. Tomcat & Deployment Ops</th>
+                <th>3. Interview Q&A: Technical (Hari/Krishna)</th>
+                <th>4. Interview Q&A: Process (Sanjana)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <code>200 OK / 201 Created</code>
+                    <span class="explain"><b>Success.</b> No action needed. The request was received and processed correctly.</span>
+
+                    <code>400 Bad Request</code>
+                    <span class="explain"><b>Client Error.</b> The user sent invalid JSON or missing fields. Action: Check the payload sent.</span>
+
+                    <code>401 Unauth / 403 Forbidden</code>
+                    <span class="explain"><b>Auth Error.</b> Token expired (401) or valid token but no permission (403). Action: Check IAM/RBAC.</span>
+
+                    <code>404 Not Found</code>
+                    <span class="explain"><b>Routing Error.</b> Wrong URL or the Application (WAR) is not deployed. Action: Check paths and deployment status.</span>
+
+                    <code>500 Internal Error</code>
+                    <span class="explain"><b>Server Error.</b> The Java code crashed. Action: Immediately check `catalina.out` for the Exception Stack Trace.</span>
+
+                    <code>503 Service Unavailable</code>
+                    <span class="explain"><b>Capacity Error.</b> Server is overloaded or down. Action: Check CPU/Memory and Scaling limits.</span>
+
+                    <code>504 Gateway Timeout</code>
+                    <span class="explain"><b>Timeout.</b> The App is waiting too long for the Database or a 3rd Party API. Action: Check downstream health.</span>
+                </td>
+                <td>
+                    <code>bin/startup.sh</code>
+                    <span class="explain">Manual script to start Tomcat if the systemctl service fails or is not configured.</span>
+
+                    <code>catalina.out</code>
+                    <span class="explain">The <b>MASTER LOG</b> file for Tomcat. 99% of Java application errors will be found here.</span>
+
+                    <code>work/ & temp/</code>
+                    <span class="explain">Temporary cache directories. If an app acts weird after deployment, <b>delete these</b> and restart to clear the cache.</span>
+
+                    <code>setenv.sh</code>
+                    <span class="explain">Configuration file to set environment variables, specifically the Java Heap Size (`-Xmx4g -Xms4g`).</span>
+
+                    <code>server.xml</code>
+                    <span class="explain">Main Tomcat configuration file. Defines which <b>Ports</b> (8080) and Connectors the server listens on.</span>
+
+                    <code>systemctl restart tomcat</code>
+                    <span class="explain">The standard, safe, and automated way to restart the application in a production environment.</span>
+
+                    <code>ps -ef | grep tomcat</code>
+                    <span class="explain">Verifies if the Tomcat process ID (PID) is actually running.</span>
+                </td>
+                <td>
+                    <code>Q: "Troubleshoot K8s Layers?"</code>
+                    <span class="explain"><b>Answer:</b> "I follow the layer order: 1. `kubectl logs` (App Error), 2. `describe` (K8s Event), 3. `top nodes` (Infra Resource), 4. Check Network/ALB."</span>
+
+                    <code>Q: "User 15 Query?"</code>
+                    <span class="explain"><b>Answer:</b> Use OFFSET. `SELECT * FROM users ORDER BY id LIMIT 1 OFFSET 14;`</span>
+
+                    <code>Q: "500 vs 504?"</code>
+                    <span class="explain"><b>Answer:</b> "500 is an App Crash (Code/Logic). 504 is a Timeout (App waiting for DB/API)."</span>
+
+                    <code>Q: "Fix Unhealthy LB?"</code>
+                    <span class="explain"><b>Answer:</b> "1. Check Security Group (Port 8080). 2. Check App Process (`ss -tuln`). 3. Check Health Path (`/health`)."</span>
+
+                    <code>Q: "UNION vs ALL?"</code>
+                    <span class="explain"><b>Answer:</b> "UNION removes duplicates (slower). UNION ALL keeps duplicates (faster)."</span>
+
+                    <code>Q: "Left vs Inner?"</code>
+                    <span class="explain"><b>Answer:</b> "LEFT joins find missing data (orphans). INNER joins find matching data."</span>
+                </td>
+                <td>
+                    <code>Q: "Automation Example?"</code>
+                    <span class="explain"><b>Answer:</b> "I scripted log rotation using `tar` & `truncate` to stop disk full alerts. Scheduled it via Crontab."</span>
+
+                    <code>Q: "Handle P1 Incident?"</code>
+                    <span class="explain"><b>Answer:</b> "1. Ack ticket. 2. Join Bridge. 3. <b>Mitigate</b> (Restart/Rollback) first. 4. Communicate every 30m. 5. RCA later."</span>
+
+                    <code>Q: "Why SRE?"</code>
+                    <span class="explain"><b>Answer:</b> "I mastered L1 monitoring. Now I want to fix root causes using Code, Linux, and Automation."</span>
+
+                    <code>Q: "Shift Handover?"</code>
+                    <span class="explain"><b>Answer:</b> "I summarize Open Tickets, pending P1 incidents, and ongoing deployments for the US team."</span>
+
+                    <code>Q: "Self-Driven?"</code>
+                    <span class="explain"><b>Answer:</b> "I proactively set up a Health Check script to alert me <b>before</b> users reported downtime."</span>
+
+                    <code>Q: "15th User Logic?"</code>
+                    <span class="explain"><b>Answer:</b> "Using `OFFSET` allows pagination logic to skip specific rows effectively."</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

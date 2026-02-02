@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SRE & App Ops Master Grid</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0.5cm;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 10px;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            font-size: 18px;
+            margin: 5px 0;
+            text-transform: uppercase;
+            color: #2c3e50;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, auto);
+            gap: 4px;
+            width: 100%;
+            height: 95vh;
+            background-color: #fff;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .box {
+            border: 1px solid #000;
+            background-color: #fff;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            padding: 2px;
+            margin-bottom: 3px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        .content {
+            flex-grow: 1;
+        }
+        .item {
+            border-bottom: 1px dashed #ccc;
+            padding: 2px 0;
+            line-height: 1.2;
+        }
+        .item:last-child {
+            border-bottom: none;
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background-color: #eee;
+            padding: 0 2px;
+            font-weight: bold;
+            color: #d63031;
+            font-size: 10px;
+            display: block;
+        }
+        .desc {
+            font-size: 9px;
+            color: #555;
+            display: block;
+            margin-top: 1px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 SRE & App Ops Ultimate Master Cheat Sheet (1920x1080 Optimized)</h1>
+
+    <div class="container">
+        
+        <div class="box">
+            <div class="header">1. Linux Admin & Permissions</div>
+            <div class="content">
+                <div class="item"><code>w / uptime / uname -a</code><span class="desc">Show active users, system load avg, kernel info.</span></div>
+                <div class="item"><code>hostnamectl</code><span class="desc">View/Set hostname & OS release details.</span></div>
+                <div class="item"><code>systemctl restart &lt;svc&gt;</code><span class="desc">Hard restart service (Tomcat/DB) to fix hung state.</span></div>
+                <div class="item"><code>journalctl -u &lt;svc&gt; -xe</code><span class="desc">Deep dive logs for boot errors/crashes.</span></div>
+                <div class="item"><code>chmod 755 &lt;file&gt;</code><span class="desc">rwxr-xr-x. Owner=Full, Group/Others=Read+Exec.</span></div>
+                <div class="item"><code>chown -R user:group &lt;dir&gt;</code><span class="desc">Recursively fixes "Permission Denied" errors.</span></div>
+                <div class="item"><code>find /path -mtime +7 -delete</code><span class="desc">Automation to delete logs older than 7 days.</span></div>
+                <div class="item"><code>grep -r "ERROR" /var/log</code><span class="desc">Recursive search for error strings in all files.</span></div>
+                <div class="item"><code>ps -ef | grep java</code><span class="desc">Verify Java process is running.</span></div>
+                <div class="item"><code>top / htop</code><span class="desc">Real-time CPU/RAM. Press 'P' to sort by CPU.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">2. Network & Port Troubleshooting</div>
+            <div class="content">
+                <div class="item"><code>ss -tuln</code><span class="desc">Fastest view of listening TCP/UDP ports.</span></div>
+                <div class="item"><code>netstat -tulpn</code><span class="desc">Checks ports + PID (Process ID) owning them.</span></div>
+                <div class="item"><code>lsof -i :8080</code><span class="desc">"List Open Files" - finds exactly who locked port 8080.</span></div>
+                <div class="item"><code>telnet &lt;IP&gt; &lt;Port&gt;</code><span class="desc">Test if remote server port is open.</span></div>
+                <div class="item"><code>nc -zv &lt;IP&gt; &lt;Port&gt;</code><span class="desc">Netcat stealth port scan (faster than telnet).</span></div>
+                <div class="item"><code>curl -Iv &lt;URL&gt;</code><span class="desc">Fetches Headers (-I) & Verbose (-v) for status.</span></div>
+                <div class="item"><code>traceroute &lt;IP&gt;</code><span class="desc">Shows network hops to destination (finds latency).</span></div>
+                <div class="item"><code>nslookup &lt;domain&gt;</code><span class="desc">Debugs DNS resolution (IP vs Name).</span></div>
+                <div class="item"><code>ip route show</code><span class="desc">Shows routing table (Gateway/Interface).</span></div>
+                <div class="item"><code>ping -c 4 &lt;IP&gt;</code><span class="desc">Tests basic connectivity & packet loss.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">3. SQL Deep-Dive: Reads & Joins</div>
+            <div class="content">
+                <div class="item"><code>SELECT * FROM users LIMIT 10;</code><span class="desc">Basic read.</span></div>
+                <div class="item"><code>SELECT * FROM users ORDER BY id LIMIT 1 OFFSET 14;</code><span class="desc">"15th User" Query (Skip 14, Take 1).</span></div>
+                <div class="item"><code>SELECT * FROM t1 UNION SELECT * FROM t2;</code><span class="desc">Combines rows; REMOVES duplicates.</span></div>
+                <div class="item"><code>SELECT * FROM t1 UNION ALL ...</code><span class="desc">Combines rows; KEEPS duplicates.</span></div>
+                <div class="item"><code>INNER JOIN:</code><span class="desc">SELECT * FROM u JOIN o ON u.id=o.uid; (Matches in BOTH).</span></div>
+                <div class="item"><code>LEFT JOIN:</code><span class="desc">SELECT * FROM u LEFT JOIN o ON u.id=o.uid; (Finds Orphans).</span></div>
+                <div class="item"><code>RIGHT JOIN:</code><span class="desc">Keeps all Right table rows (Rarely used).</span></div>
+                <div class="item"><code>FULL OUTER JOIN:</code><span class="desc">SELECT * FROM t1 FULL OUTER JOIN t2 ... (Keep All).</span></div>
+                <div class="item"><code>EXISTS:</code><span class="desc">SELECT * FROM u WHERE EXISTS (SELECT 1...); (Fast Filter).</span></div>
+                <div class="item"><code>PK vs Unique:</code><span class="desc">PK=Unique+NotNull. Unique=Allows 1 Null.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">4. SQL Deep-Dive: DDL, DML & Perf</div>
+            <div class="content">
+                <div class="item"><code>DROP TABLE old_logs;</code><span class="desc">DDL: Deletes table structure permanently.</span></div>
+                <div class="item"><code>DELETE FROM users WHERE id=15;</code><span class="desc">DML: Removes specific data row.</span></div>
+                <div class="item"><code>ALTER TABLE users ADD COLUMN phone TEXT;</code><span class="desc">DDL: Modify schema.</span></div>
+                <div class="item"><code>TRUNCATE TABLE temp;</code><span class="desc">DDL: Empties data fast, keeps structure.</span></div>
+                <div class="item"><code>EXPLAIN ANALYZE SELECT ...;</code><span class="desc">Debugs slow queries via cost.</span></div>
+                <div class="item"><code>SELECT pid, state, query FROM pg_stat_activity;</code><span class="desc">Finds stuck queries.</span></div>
+                <div class="item"><code>VACUUM (VERBOSE, ANALYZE);</code><span class="desc">Reclaims storage & updates stats.</span></div>
+                <div class="item"><code>UPSERT:</code><span class="desc">INSERT ... ON CONFLICT (id) DO UPDATE ...</span></div>
+                <div class="item"><code>LOCKS:</code><span class="desc">SELECT pid, mode FROM pg_locks...</span></div>
+                <div class="item"><code>TXN:</code><span class="desc">BEGIN; UPDATE...; COMMIT; (Atomic).</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">5. Java, OOPS & Spring Framework</div>
+            <div class="content">
+                <div class="item"><code>Class vs Object</code><span class="desc">Class=Blueprint. Object=Instance.</span></div>
+                <div class="item"><code>int vs Integer</code><span class="desc">Primitive (fast) vs Wrapper (Object).</span></div>
+                <div class="item"><code>Inheritance</code><span class="desc">Child class reuses Parent code.</span></div>
+                <div class="item"><code>Polymorphism</code><span class="desc">Method Overloading vs Overriding.</span></div>
+                <div class="item"><code>IOC / DI</code><span class="desc">Spring manages objects & injects @Autowired.</span></div>
+                <div class="item"><code>@RestController</code><span class="desc">API Layer (JSON) -> Entry point.</span></div>
+                <div class="item"><code>@Service</code><span class="desc">Business Logic Layer.</span></div>
+                <div class="item"><code>@Repository</code><span class="desc">DAO Layer (Database Access).</span></div>
+                <div class="item"><code>Maven (pom.xml)</code><span class="desc">Dependency/Build Management.</span></div>
+                <div class="item"><code>Hibernate / JPA</code><span class="desc">ORM: Maps Java Objects to SQL Tables.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">6. Kubernetes (K8s) Components</div>
+            <div class="content">
+                <div class="item"><code>kubectl get pods -n &lt;ns&gt;</code><span class="desc">List status & restart counts.</span></div>
+                <div class="item"><code>kubectl describe pod &lt;name&gt;</code><span class="desc">Debug "Pending/CrashLoop".</span></div>
+                <div class="item"><code>kubectl logs -f &lt;pod&gt;</code><span class="desc">Stream live app logs.</span></div>
+                <div class="item"><code>kubectl top nodes</code><span class="desc">Check CPU/RAM saturation.</span></div>
+                <div class="item"><code>Deployment / StatefulSet</code><span class="desc">Stateless vs Stateful Apps.</span></div>
+                <div class="item"><code>Service / Ingress</code><span class="desc">Internal LB vs External Route.</span></div>
+                <div class="item"><code>ConfigMap / Secret</code><span class="desc">Config/Password storage.</span></div>
+                <div class="item"><code>PV / PVC</code><span class="desc">Persistent Storage.</span></div>
+                <div class="item"><code>Control Plane</code><span class="desc">API-Server, ETCD, Scheduler.</span></div>
+                <div class="item"><code>Worker Node</code><span class="desc">Kubelet, Proxy, Runtime.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">7. AWS Cloud Infrastructure</div>
+            <div class="content">
+                <div class="item"><code>EC2 / S3 / IAM / VPC</code><span class="desc">Compute, Storage, Identity, Net.</span></div>
+                <div class="item"><code>IAM Role</code><span class="desc">Safe machine permissions (No keys).</span></div>
+                <div class="item"><code>Security Group (SG)</code><span class="desc">Stateful Firewall (Instance).</span></div>
+                <div class="item"><code>NACL</code><span class="desc">Stateless Firewall (Subnet).</span></div>
+                <div class="item"><code>ALB / Target Group</code><span class="desc">L7 Route / Health Checks.</span></div>
+                <div class="item"><code>VPC Endpoint</code><span class="desc">Private S3 tunnel (No IGW).</span></div>
+                <div class="item"><code>CloudWatch</code><span class="desc">Logs, Metrics, Alarms.</span></div>
+                <div class="item"><code>Route 53</code><span class="desc">DNS Service.</span></div>
+                <div class="item"><code>Lambda</code><span class="desc">Serverless Functions.</span></div>
+                <div class="item"><code>ASG</code><span class="desc">Auto Scaling Group.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">8. Observability & Monitoring</div>
+            <div class="content">
+                <div class="item"><code>CloudWatch Metrics</code><span class="desc">CPU, Disk, ELB Latency, 5xx.</span></div>
+                <div class="item"><code>Splunk / Nieman</code><span class="desc">Log Aggregation. Search "Error".</span></div>
+                <div class="item"><code>Postman / Curl</code><span class="desc">Trace API calls.</span></div>
+                <div class="item"><code>Distributed Tracing</code><span class="desc">Track Request-ID across svcs.</span></div>
+                <div class="item"><code>"Monarch" / Azure One</code><span class="desc">JD specific tools.</span></div>
+                <div class="item"><code>Alerts & Alarms</code><span class="desc">Thresholds (CPU > 80%).</span></div>
+                <div class="item"><code>Dashboards</code><span class="desc">RED Metrics (Rate, Error, Dur).</span></div>
+                <div class="item"><code>Log Rotation</code><span class="desc">Prevent disk full (logrotate).</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">9. Spring MVC Request Flow</div>
+            <div class="content">
+                <div class="item"><code>1. DispatcherServlet</code><span class="desc">Front Controller receives HTTP.</span></div>
+                <div class="item"><code>2. Handler Mapping</code><span class="desc">Maps URL to @Controller.</span></div>
+                <div class="item"><code>3. Service Layer</code><span class="desc">Executes Business Logic.</span></div>
+                <div class="item"><code>4. Repository Layer</code><span class="desc">Hibernate queries Database.</span></div>
+                <div class="item"><code>5. Database</code><span class="desc">Returns Data to Java Object.</span></div>
+                <div class="item"><code>6. Response</code><span class="desc">Controller sends JSON (200 OK).</span></div>
+                <div class="item"><code>Exceptions</code><span class="desc">@ControllerAdvice handles crashes.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">10. Bash Automation: Log Rotation</div>
+            <div class="content">
+                <div class="item"><code>Header</code><span class="desc">#!/bin/bash | set -Eeuo pipefail</span></div>
+                <div class="item"><code>Vars</code><span class="desc">LOG_DIR="/opt/tomcat/logs"</span></div>
+                <div class="item"><code>Compress</code><span class="desc">tar -czf $ARCH/log_$DATE.tgz $LOG/*.log</span></div>
+                <div class="item"><code>Clear</code><span class="desc">truncate -s 0 "$LOG/app.log"</span></div>
+                <div class="item"><code>Cleanup</code><span class="desc">find "$ARCH" -mtime +7 -delete</span></div>
+                <div class="item"><code>Schedule</code><span class="desc">crontab -e -> 0 0 * * * script.sh</span></div>
+                <div class="item"><code>Health Check</code><span class="desc">if ! curl localhost; then restart; fi</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">11. Troubleshooting Flow (L2/SRE)</div>
+            <div class="content">
+                <div class="item"><code>1. Check Monitoring</code><span class="desc">Splunk/CW for spikes.</span></div>
+                <div class="item"><code>2. Trace API</code><span class="desc">Postman/Curl reproduce 500/404.</span></div>
+                <div class="item"><code>3. Check Service</code><span class="desc">systemctl status tomcat.</span></div>
+                <div class="item"><code>4. Check Resources</code><span class="desc">top (CPU), df -h (Disk).</span></div>
+                <div class="item"><code>5. DB & Java</code><span class="desc">SQL Joins (Data), jstack (Lock).</span></div>
+                <div class="item"><code>6. K8S Check</code><span class="desc">describe pod, logs.</span></div>
+                <div class="item"><code>7. Network</code><span class="desc">SG, LB Health, Connectivity.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">12. Incident Management & Terms</div>
+            <div class="content">
+                <div class="item"><code>SLA</code><span class="desc">Service Level Agreement (Deadline).</span></div>
+                <div class="item"><code>MTTR</code><span class="desc">Mean Time To Recovery (Speed).</span></div>
+                <div class="item"><code>RCA</code><span class="desc">Root Cause Analysis (Why?).</span></div>
+                <div class="item"><code>SME</code><span class="desc">Subject Matter Expert (Code Owner).</span></div>
+                <div class="item"><code>Bridge Call</code><span class="desc">Live P1 Triage.</span></div>
+                <div class="item"><code>Handover</code><span class="desc">Shift transfer (India->US).</span></div>
+                <div class="item"><code>SOP</code><span class="desc">Standard Operating Procedure.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">13. REST API Status Codes</div>
+            <div class="content">
+                <div class="item"><code>200 OK / 201 Created</code><span class="desc">Success. No action.</span></div>
+                <div class="item"><code>400 Bad Request</code><span class="desc">Client error (JSON).</span></div>
+                <div class="item"><code>401 Unauth / 403 Forbidden</code><span class="desc">Token/Perms issue.</span></div>
+                <div class="item"><code>404 Not Found</code><span class="desc">Wrong URL / WAR not deployed.</span></div>
+                <div class="item"><code>500 Internal Error</code><span class="desc">Java Crash. Check Logs.</span></div>
+                <div class="item"><code>503 / 504 Timeout</code><span class="desc">DB slow or LB issue.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">14. Tomcat & Deployment Ops</div>
+            <div class="content">
+                <div class="item"><code>bin/startup.sh</code><span class="desc">Manual Start script.</span></div>
+                <div class="item"><code>catalina.out</code><span class="desc">MAIN Log. Check Stacks here.</span></div>
+                <div class="item"><code>work/ & temp/</code><span class="desc">Delete to fix cache bugs.</span></div>
+                <div class="item"><code>setenv.sh</code><span class="desc">Set JVM Heap (-Xmx4g).</span></div>
+                <div class="item"><code>server.xml</code><span class="desc">Config Ports (8080).</span></div>
+                <div class="item"><code>systemctl restart</code><span class="desc">Standard restart.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">15. Interview Q&A: Technical</div>
+            <div class="content">
+                <div class="item"><code>Q: Troubleshoot K8s?</code><span class="desc">A: 1.Logs 2.Events 3.Node 4.Net.</span></div>
+                <div class="item"><code>Q: User 15 Query?</code><span class="desc">A: SELECT... LIMIT 1 OFFSET 14.</span></div>
+                <div class="item"><code>Q: 500 vs 504?</code><span class="desc">A: 500=Code Crash; 504=DB/Upstream Slow.</span></div>
+                <div class="item"><code>Q: Fix Unhealthy LB?</code><span class="desc">A: SG, App Port, Health Path.</span></div>
+                <div class="item"><code>Q: Union vs All?</code><span class="desc">A: Union=Dedup; All=Keep Dupes (Fast).</span></div>
+                <div class="item"><code>Q: Left vs Inner?</code><span class="desc">A: Left=Orphans; Inner=Matches.</span></div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="header">16. Interview Q&A: Process</div>
+            <div class="content">
+                <div class="item"><code>Q: Automation Ex?</code><span class="desc">A: Bash script for log rotation.</span></div>
+                <div class="item"><code>Q: Handle P1?</code><span class="desc">A: Ack->Bridge->Mitigate->Comm->RCA.</span></div>
+                <div class="item"><code>Q: Why SRE?</code><span class="desc">A: From Monitor to Fix via Code/Auto.</span></div>
+                <div class="item"><code>Q: Handover?</code><span class="desc">A: Summarize Open Tickets/Deployments.</span></div>
+                <div class="item"><code>Q: Self-Driven?</code><span class="desc">A: Setup Health Check alerts proactively.</span></div>
+                <div class="item"><code>Q: 15th User Logic?</code><span class="desc">A: OFFSET allows pagination.</span></div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

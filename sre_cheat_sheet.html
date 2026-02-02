@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body { font-family: sans-serif; font-size: 10pt; margin: 0; padding: 10px; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 20px; }
+    th, td { border: 1px solid black; padding: 5px; vertical-align: top; word-wrap: break-word; }
+    th { background-color: #f2f2f2; text-align: left; text-transform: uppercase; font-size: 9pt; }
+    code { font-family: monospace; background-color: #eee; display: block; margin-bottom: 2px; font-weight: bold; }
+    .section-header { background-color: #333; color: white; text-align: center; font-weight: bold; }
+</style>
+</head>
+<body>
+
+    <table>
+        <thead>
+            <tr class="section-header"><th colspan="4">ROW 1: LINUX, NETWORK & SQL DEEP DIVE</th></tr>
+            <tr>
+                <th>1. LINUX ADMIN & PERMISSIONS (EXPANDED)</th>
+                <th>2. NETWORK & PORT TROUBLESHOOTING</th>
+                <th>3. SQL DEEP-DIVE: JOINS & READS</th>
+                <th>4. SQL DEEP-DIVE: DDL, DML & PERF</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <code>w</code>
+                    Show who is logged in & current system load avg.
+                    <br><br>
+                    <code>uptime</code>
+                    Show how long system has been running + load.
+                    <br><br>
+                    <code>uname -a</code>
+                    Print Kernel version, Architecture & System info.
+                </td>
+                <td>
+                    <code>ss -tuln</code>
+                    Fastest view of listening TCP/UDP ports.
+                </td>
+                <td>
+                    <code>SELECT * FROM users ORDER BY id LIMIT 1 OFFSET 14;</code>
+                    <b>15th User Query:</b> Offsets 14 rows, takes the next 1.
+                </td>
+                <td>
+                    <code>DROP TABLE old_logs;</code>
+                    DDL: Deletes table structure permanently.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>hostnamectl</code>
+                    View/Set hostname, OS Release & Virtualization details.
+                </td>
+                <td>
+                    <code>netstat -tulpn</code>
+                    Checks ports + Process IDs (PID) owning them.
+                </td>
+                <td>
+                    <code>SELECT * FROM t1 UNION SELECT * FROM t2;</code>
+                    Combines rows from tables; <b>REMOVES</b> duplicates.
+                </td>
+                <td>
+                    <code>DELETE FROM users WHERE id=15;</code>
+                    DML: Removes specific data row (User 15).
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>systemctl status &lt;svc&gt;</code>
+                    Check if service (Tomcat/DB) is active/dead.
+                    <br><br>
+                    <code>systemctl restart &lt;svc&gt;</code>
+                    Hard restart to fix hung applications.
+                </td>
+                <td>
+                    <code>lsof -i :8080</code>
+                    "List Open Files" - finds exactly who locked port 8080.
+                </td>
+                <td>
+                    <code>SELECT * FROM t1 UNION ALL SELECT * FROM t2;</code>
+                    Combines rows; <b>KEEPS</b> all duplicates (Faster).
+                </td>
+                <td>
+                    <code>ALTER TABLE users ADD COLUMN phone TEXT;</code>
+                    DDL: Modifies schema to add a new field.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>journalctl -u &lt;svc&gt; -xe</code>
+                    Deep dive into system logs/boot errors for a specific service.
+                </td>
+                <td>
+                    <code>telnet &lt;IP&gt; &lt;Port&gt;</code>
+                    Legacy test if a remote server port is open/reachable.
+                </td>
+                <td>
+                    <code>SELECT * FROM users u JOIN orders o ON u.id=o.uid;</code>
+                    <b>INNER JOIN:</b> Matches records present in BOTH tables.
+                </td>
+                <td>
+                    <code>TRUNCATE TABLE temp_data;</code>
+                    DDL: Empties table data fast but keeps structure.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>chmod 755 &lt;file&gt;</code>
+                    Permissions: Owner=Full, Group/Others=Read+Exec.
+                </td>
+                <td>
+                    <code>nc -zv &lt;IP&gt; &lt;Port&gt;</code>
+                    Netcat stealth port scan (faster/cleaner than telnet).
+                </td>
+                <td>
+                    <code>SELECT * FROM users u LEFT JOIN orders o ON u.id=o.uid;</code>
+                    <b>LEFT JOIN:</b> Finds ORPHANS (Users without Orders).
+                </td>
+                <td>
+                    <code>EXPLAIN ANALYZE SELECT ... ;</code>
+                    Debugs slow queries by showing actual execution cost.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>chown -R user:group &lt;dir&gt;</code>
+                    Recursively fixes "Permission Denied" errors on folders.
+                </td>
+                <td>
+                    <code>curl -Iv &lt;URL&gt;</code>
+                    Fetches Headers (-I) & Verbose (-v) to debug 404/500 errors.
+                </td>
+                <td>
+                    <code>SELECT * FROM users u RIGHT JOIN orders o ON u.id=o.uid;</code>
+                    <b>RIGHT JOIN:</b> Keeps all Right table rows (Rarely used).
+                </td>
+                <td>
+                    <code>SELECT pid, state, query FROM pg_stat_activity;</code>
+                    Finds stuck/long-running DB queries.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>find /path -mtime +7 -delete</code>
+                    Automation to delete logs older than 7 days.
+                </td>
+                <td>
+                    <code>traceroute &lt;IP&gt;</code>
+                    Shows every network hop/router to a destination IP.
+                </td>
+                <td>
+                    <code>SELECT * FROM t1 FULL OUTER JOIN t2 ON id;</code>
+                    <b>FULL OUTER:</b> Keep EVERYTHING (Match + No Match).
+                </td>
+                <td>
+                    <code>VACUUM (VERBOSE, ANALYZE);</code>
+                    Reclaims storage space and updates DB statistics.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>grep -r "ERROR" /var/log</code>
+                    Recursive search for error text in all files in a directory.
+                </td>
+                <td>
+                    <code>nslookup &lt;domain&gt;</code>
+                    Debugs DNS resolution issues (IP vs Name).
+                </td>
+                <td>
+                    <code>SELECT * FROM u WHERE EXISTS (SELECT 1...);</code>
+                    <b>EXISTS:</b> Fast filter "at least one related row".
+                </td>
+                <td>
+                    <code>INSERT INTO ... ON CONFLICT (id) DO UPDATE ...</code>
+                    <b>UPSERT:</b> Insert or Update if exists.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>ps -ef | grep java</code>
+                    Verifies if the Java/Tomcat process is actually running.
+                </td>
+                <td>
+                    <code>ip route show</code>
+                    Shows the routing table (Gateway/Interface configuration).
+                </td>
+                <td>
+                    <b>Window Function:</b>
+                    <code>ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary)</code>
+                </td>
+                <td>
+                    <code>SELECT pid, mode FROM pg_locks...</code>
+                    <b>LOCKS:</b> Identifies queries blocking others.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>top / htop</code>
+                    Real-time CPU/RAM monitor. Press 'P' to sort by CPU usage.
+                </td>
+                <td>
+                    <code>ping -c 4 &lt;IP&gt;</code>
+                    Tests basic connectivity and packet loss to a host.
+                </td>
+                <td>
+                    <code>SELECT count(*), status FROM orders GROUP BY status;</code>
+                    <b>Aggregation:</b> Counts items by category.
+                </td>
+                <td>
+                    <code>BEGIN; UPDATE...; COMMIT;</code>
+                    <b>TRANSACTION:</b> Ensures atomic operations (all or nothing).
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr class="section-header"><th colspan="4">ROW 2: APP FRAMEWORK & CLOUD INFRASTRUCTURE</th></tr>
+            <tr>
+                <th>1. JAVA, OOPS & SPRING FRAMEWORK</th>
+                <th>2. KUBERNETES (K8S) COMPONENTS</th>
+                <th>3. AWS CLOUD INFRASTRUCTURE</th>
+                <th>4. CLOUDWATCH, LOGGING & MONITORING</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <b>Class vs Object:</b> Class is the Blueprint. Object is the specific runtime Instance.
+                </td>
+                <td>
+                    <code>kubectl get pods -n &lt;ns&gt;</code>
+                    Lists Pod status (Running/Error) & Restart counts.
+                </td>
+                <td>
+                    <b>EC2 / S3 / IAM / VPC</b>
+                    Core Compute, Storage, Identity, and Network layers.
+                </td>
+                <td>
+                    <b>CloudWatch Metrics</b>
+                    CPU, Memory, Disk I/O, ELB Latency, 5xx Error Count.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>int vs Integer:</b> 'int' is Primitive (fast, no null); 'Integer' is Wrapper (Object).
+                </td>
+                <td>
+                    <code>kubectl describe pod &lt;name&gt;</code>
+                    Critical for debugging "Pending" or "CrashLoop" events.
+                </td>
+                <td>
+                    <b>IAM Role</b>
+                    Safe permissions for machines (EC2/EKS/Lambda) without static keys.
+                </td>
+                <td>
+                    <b>Splunk / Nieman</b>
+                    Log Aggregation tools. Search for "Exception" or "Error".
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Inheritance:</b> Child class reuses Parent code.
+                    <br>
+                    <b>Polymorphism:</b> Overloading vs Overriding.
+                </td>
+                <td>
+                    <code>kubectl logs -f &lt;pod&gt;</code>
+                    Streams live application logs (Stack Traces) from container.
+                </td>
+                <td>
+                    <b>Security Group (SG)</b>
+                    Stateful Firewall (Instance level). Allowing In automatically allows Out.
+                </td>
+                <td>
+                    <b>Postman / Curl</b>
+                    Trace API calls to reproduce 400/500 errors and check headers.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>IOC / DI:</b> Spring manages object lifecycle (IOC) & injects dependencies (`@Autowired`).
+                </td>
+                <td>
+                    <code>kubectl top nodes</code>
+                    Checks CPU/Memory saturation on nodes to find bottlenecks.
+                </td>
+                <td>
+                    <b>NACL (Network ACL)</b>
+                    Stateless Firewall (Subnet level). Must explicitly allow In & Out.
+                </td>
+                <td>
+                    <b>Distributed Tracing</b>
+                    Tracking a unique Request-ID across multiple Microservices.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>@RestController</code> / <code>@Service</code>
+                    API Layer (JSON endpoints) -> Business Logic Layer.
+                </td>
+                <td>
+                    <b>Deployment / StatefulSet</b>
+                    Manages stateless apps vs stateful DB apps (persistent ID).
+                </td>
+                <td>
+                    <b>ALB / Target Group</b>
+                    ALB routes traffic (Layer 7); TG performs Health Checks on instances.
+                </td>
+                <td>
+                    <b>"Monarch" / Azure One</b>
+                    Project-specific monitoring tools mentioned in JD.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>Maven (pom.xml)</code>
+                    Manages project dependencies (jars) and the build process.
+                </td>
+                <td>
+                    <b>Service / Ingress</b>
+                    Service = Internal Load Balancer; Ingress = External Route (HTTP/S).
+                </td>
+                <td>
+                    <b>VPC Endpoint</b>
+                    Private tunnel to S3/DynamoDB (No Internet Gateway required).
+                </td>
+                <td>
+                    <b>Alerts & Alarms</b>
+                    Set on thresholds (e.g., CPU > 80% for 5 mins) to trigger PagerDuty.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code>Hibernate / JPA</code>
+                    ORM: Maps Java Objects directly to SQL Tables (No manual SQL).
+                </td>
+                <td>
+                    <b>ConfigMap / Secret</b>
+                    Decouples configuration files & passwords from application code.
+                </td>
+                <td>
+                    <b>Route 53</b>
+                    AWS Managed DNS Service (A records, CNAMEs, Aliases).
+                </td>
+                <td>
+                    <b>Dashboards</b>
+                    Visualizing RED metrics (Rate, Errors, Duration) for quick status.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Spring Boot Tips:</b>
+                    <br>• <code>--spring.profiles.active=prod</code>
+                    <br>• <code>@ConfigurationProperties</code> (Bind config)
+                    <br>• <code>@Valid</code> (Triggers 400 Bad Request)
+                    <br>• <code>@ControllerAdvice</code> (Global Exception Handling)
+                </td>
+                <td>
+                    <b>PV / PVC</b>
+                    Persistent Volumes (Storage) that survive Pod restarts.
+                    <br><br>
+                    <b>Control Plane:</b> API-Server, ETCD, Scheduler.
+                </td>
+                <td>
+                    <b>Lambda</b>
+                    Serverless Compute Functions (Code runs without managing servers).
+                    <br><br>
+                    <b>Minimal IRSA Gist:</b> Annotate ServiceAccount with <code>eks.amazonaws.com/role-arn</code>.
+                </td>
+                <td>
+                    <b>Log Rotation</b>
+                    Critical to prevent disk full. Use `logrotate` or custom bash scripts.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr class="section-header"><th colspan="4">ROW 3: PROCESS FLOWS, SCRIPTING & TRIAGE</th></tr>
+            <tr>
+                <th>1. SPRING MVC REQUEST FLOW</th>
+                <th>2. BASH AUTOMATION: LOG ROTATION & HEALTH</th>
+                <th>3. TROUBLESHOOTING STEPS (L2/SRE)</th>
+                <th>4. INCIDENT MANAGEMENT & TERMS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <b>1. DispatcherServlet</b>
+                    The "Front Controller" receiving all incoming HTTP calls.
+                </td>
+                <td>
+                    <code>#!/bin/bash</code>
+                    <code>set -Eeuo pipefail</code> (Fail on error).
+                </td>
+                <td>
+                    <b>1. Check Monitoring</b>
+                    Check Splunk/CloudWatch for error spikes or flatlines.
+                </td>
+                <td>
+                    <b>SLA (Service Level Agreement)</b>
+                    The Deadline (e.g. "99.9% Uptime").
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>2. Maps URL</b>
+                    Finds the right Java method for "/api/users" using <code>@Controller</code>.
+                </td>
+                <td>
+                    <code>LOG_DIR="/opt/tomcat/logs"</code>
+                    <code>ARCH="/opt/tomcat/archive"</code>
+                    <code>DATE=$(date +%Y%m%d)</code>
+                </td>
+                <td>
+                    <b>2. Trace API</b>
+                    Use Postman/Curl to reproduce 500/404 errors locally.
+                </td>
+                <td>
+                    <b>MTTR (Mean Time To Recovery)</b>
+                    Speed of fix. The #1 metric for SREs.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>3. Calls Service</b>
+                    Controller passes data to Service layer for Business Logic.
+                </td>
+                <td>
+                    <b>Action: Compress</b>
+                    <code>tar -czf $ARCH/log_$DATE.tgz $LOG/*.log</code>
+                </td>
+                <td>
+                    <b>3. Check Service</b>
+                    <code>systemctl status tomcat</code> (Is it active/running?).
+                </td>
+                <td>
+                    <b>RCA (Root Cause Analysis)</b>
+                    The "Why" & Prevention Plan.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>4. Calls Repository</b>
+                    Service calls Repository which uses Hibernate to query DB.
+                </td>
+                <td>
+                    <b>Action: Clear (Zero Downtime)</b>
+                    <code>truncate -s 0 "$LOG_DIR/app.log"</code>
+                </td>
+                <td>
+                    <b>4. Check Resources</b>
+                    <code>top</code> (CPU/RAM) & <code>df -h</code> (Disk Full = Crash).
+                </td>
+                <td>
+                    <b>SME (Subject Matter Expert)</b>
+                    The person who owns the App/Code logic.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>5. Returns Data</b>
+                    SQL result is converted back to Java Object Model.
+                </td>
+                <td>
+                    <b>Action: Cleanup</b>
+                    <code>find "$ARCH" -mtime +7 -delete</code> (Remove > 7 days).
+                </td>
+                <td>
+                    <b>5. DB & Java</b>
+                    Check SQL Joins (Data gaps) & <code>jstack</code> (Thread locks).
+                </td>
+                <td>
+                    <b>Bridge Call</b>
+                    Live Zoom/Teams call to triage P1 incidents with teams.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>6. Returns JSON</b>
+                    Controller serializes object to JSON and sends 200 OK response.
+                </td>
+                <td>
+                    <b>Action: Schedule</b>
+                    <code>crontab -e</code> -> <code>0 0 * * * script.sh</code>
+                </td>
+                <td>
+                    <b>6. K8S Check</b>
+                    <code>kubectl describe pod</code> (Events) / <code>logs</code> (Errors).
+                </td>
+                <td>
+                    <b>Handover</b>
+                    Transferring active tickets/context from India to US shift.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Exception Handling:</b>
+                    <code>@ControllerAdvice</code> catches crashes and returns 500 JSON.
+                </td>
+                <td>
+                    <b>Script: Service Health</b>
+                    <code>if ! systemctl is-active --quiet tomcat; then echo "DOWN"; fi</code>
+                </td>
+                <td>
+                    <b>7. Network</b>
+                    Check Security Groups / Load Balancer Health / Connectivity.
+                </td>
+                <td>
+                    <b>SOP (Standard Operating Procedure)</b>
+                    Step-by-step guide for known issues.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr class="section-header"><th colspan="4">ROW 4: STATUS CODES, OPS & INTERVIEW ANSWERS</th></tr>
+            <tr>
+                <th>1. REST API STATUS CODES</th>
+                <th>2. TOMCAT & DEPLOYMENT OPS</th>
+                <th>3. INTERVIEW Q&A: TECHNICAL</th>
+                <th>4. INTERVIEW Q&A: PROCESS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <b>200 OK / 201 Created</b>
+                    Success / Resource Made. No action needed.
+                </td>
+                <td>
+                    <code>bin/startup.sh</code>
+                    Manual Start script for Tomcat (if systemctl fails).
+                </td>
+                <td>
+                    <b>Q: "Troubleshoot K8s Layers?"</b>
+                    <br>A: 1. <code>kubectl logs</code> (App)
+                    <br>2. <code>describe</code> (Events)
+                    <br>3. <code>top nodes</code> (Infra).
+                </td>
+                <td>
+                    <b>Q: "Automation Example?"</b>
+                    <br>A: "I scripted log rotation using `tar` & `truncate` to stop disk alerts."
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>400 Bad Request</b>
+                    Client error (Invalid JSON). Check payload.
+                </td>
+                <td>
+                    <code>catalina.out</code>
+                    MAIN Log file. Always check here for Stack Traces first.
+                </td>
+                <td>
+                    <b>Q: "User 15 Query?"</b>
+                    <br>A: <code>SELECT * FROM users ORDER BY id LIMIT 1 OFFSET 14;</code>
+                </td>
+                <td>
+                    <b>Q: "Handle P1?"</b>
+                    <br>A: 1.Ack 2.Bridge 3.Mitigate(Restart) 4.Communicate 5.RCA.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>401 Unauth / 403 Forbidden</b>
+                    Token expired or No Permission (Check IAM/RBAC).
+                </td>
+                <td>
+                    <code>work/</code> & <code>temp/</code>
+                    Directories to delete to fix "Ghost" cache/compilation bugs.
+                </td>
+                <td>
+                    <b>Q: "500 vs 504?"</b>
+                    <br>A: 500=App Crash (Code); 504=Gateway Timeout (Upstream DB/API slow).
+                </td>
+                <td>
+                    <b>Q: "Why SRE?"</b>
+                    <br>A: "I mastered L1 monitoring. Now I want to fix root causes with code/automation."
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>404 Not Found</b>
+                    Wrong URL path or WAR file not deployed correctly.
+                </td>
+                <td>
+                    <code>setenv.sh</code>
+                    File to configure JVM Heap Memory (<code>-Xmx4g -Xms4g</code>).
+                </td>
+                <td>
+                    <b>Q: "Fix Unhealthy LB?"</b>
+                    <br>A: 1.Check SG 2.Check App Port (`ss`) 3.Check `/health` path.
+                </td>
+                <td>
+                    <b>Q: "Shift Handover?"</b>
+                    <br>A: "I summarize Open Tickets, pending P1s, and deployments to US team."
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>500 Internal Error</b>
+                    Java Code Crash. Check <code>catalina.out</code> for Exception.
+                </td>
+                <td>
+                    <code>server.xml</code>
+                    Configuration for Ports (8080) and Connectors.
+                </td>
+                <td>
+                    <b>Q: "UNION vs ALL?"</b>
+                    <br>A: UNION removes dupes (slower); ALL keeps dupes (faster).
+                </td>
+                <td>
+                    <b>Q: "Self-Driven?"</b>
+                    <br>A: "I set up a Health Check script to alert me before users reported downtime."
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>503/504 Timeout</b>
+                    DB is slow, Downstream service dead, or LB timeout.
+                </td>
+                <td>
+                    <code>systemctl restart tomcat</code>
+                    The standard, safe way to restart the application.
+                </td>
+                <td>
+                    <b>Q: "Left vs Inner?"</b>
+                    <br>A: LEFT finds orphans (missing data); INNER finds matches.
+                </td>
+                <td>
+                    <b>Q: "15th User Logic?"</b>
+                    <br>A: "Using OFFSET allows pagination logic to skip rows."
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
